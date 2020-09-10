@@ -1,0 +1,35 @@
+Upgrading Kubernetes Engine Clusters
+
+Task 1. Deploy a GKE cluster 
+
+To deploy a GKE cluster run the command:
+
+         gcloud container --project "starry-core-285911" clusters create "cluster-1" --zone "us-central1-c" \
+         >>  --no-enable-basic-auth --cluster-version "1.15.12-gke.2" --machine-type "e2-medium" --image-type "COS" \
+         >>  --disk-type "pd-standard" --disk-size "100" --metadata disable-legacy-endpoints=true \
+         >>  --scopes "https://www.googleapis.com/auth/devstorage.read_only","https://www.googleapis.com/auth/logging.write","https://www.googleapis.com/auth/monitoring","https://www.googleapis.com/auth/servicecontrol","https://www.googleapis.com/auth/service.management.readonly","https://www.googleapis.com/auth/trace.append" \
+         >>  --num-nodes "3" --enable-stackdriver-kubernetes --enable-ip-alias --network "projects/starry-core-285911/global/networks/default" \
+         >>  --subnetwork "projects/starry-core-285911/regions/us-central1/subnetworks/default" --default-max-pods-per-node "110" \
+         >>  --no-enable-master-authorized-networks --addons HorizontalPodAutoscaling,HttpLoadBalancing --enable-autoupgrade --enable-autorepair \
+         >>  --max-surge-upgrade 1 --max-unavailable-upgrade 0
+
+Task 2: Upgrade your GKE Clusters
+
+To see the available versions run the command:
+
+        gcloud container get-server-config --zone us-central1-c 
+
+To upgrade to a specific version run the command:
+
+        gcloud container clusters upgrade cluster-1 --cluster-version 1.15.12-gke.9 --zone us-central1-c 
+
+
+Task 2b: Upgrade the node pool in your cluster 
+
+To upgrade your nodes to the version that your master is running, run the command:
+
+        gcloud container clusters upgrade cluster-1 --node-pool=defaul-pool --zone us-central1-c 
+
+To check the status of the upgrade, run the command:
+
+        gcloud container operations list
